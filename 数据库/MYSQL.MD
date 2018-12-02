@@ -79,3 +79,121 @@ TIMESTAMP不允许为NULL = 4
 
 
 
+## mysql基本知识
+
+### 1、数据库锁
+
+* 排它锁
+
+* 共享锁
+
+### 2、引擎
+
+* InnoDB
+
+* MyISAM
+
+* ARCHIVE
+
+  可以实现高并发的插入
+
+  适合存储大量日志、历史数据
+
+* BLACKHOLE
+
+* MEMORY
+
+* MRG_MYISAM
+
+* PERFORMANCE_SCHEMA
+
+* SPHINX
+
+* TokuDB
+
+* CSV
+
+### 3、页
+
+系统从磁盘读取数据到内存时是以磁盘块（block）为基本单位的，位于同一个磁盘块中的数据会被一次性读取出来，而不是需要什么取什么。
+
+InnoDB存储引擎中有页（Page）的概念，页是其磁盘管理的最小单位。
+
+InnoDB存储引擎中默认每个页的大小为16KB，可通过参数innodb_page_size将页的大小设置为4K、8K、16K，
+
+```mysql
+show variables like 'innodb_page_size';
+```
+
+### 4、多版本并发控制
+
+​	mvvc
+
+
+
+
+
+### 5、查询表大小
+
+```mysql
+SELECT
+	TABLE_NAME,
+	DATA_LENGTH + INDEX_LENGTH,
+	TABLE_ROWS,
+	concat(
+		round(
+			(DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024,
+			2
+		),
+		'MB'
+	) AS DATA
+FROM
+	information_schema.TABLES
+WHERE
+	TABLE_SCHEMA = 'snfq_pay_center';
+```
+
+
+
+## mysql性能指标
+
+1、当前线程连接数
+
+```mysql
+show global status like 'threads_%';
+```
+
+| Threads_cached    | 当前此时此刻线程缓存中有多少空闲线程 | 70   |
+| ----------------- | ------------------------------------ | ---- |
+| Threads_connected | 当前已建立连接的数量                 | 30   |
+| Threads_created   | 最近一次服务启动，已经创建线程的数量 | 103  |
+| Threads_rejected  |                                      | 0    |
+| Threads_running   | 当前激活（非睡眠）的线程数           | 1    |
+
+2、连接数和最大连接数
+
+```mysql
+show global status like '%connections';
+```
+
+| Connection_errors_max_connections |      |      |
+| --------------------------------- | ---- | ---- |
+| Connections                       |      |      |
+| Max_used_connections              |      |      |
+
+
+
+```mysql
+show global status like '%abort%';
+
+show global status like '%table_lock%';
+
+show global status like '%innodb_row_lock%';
+
+show global status like '%slow_queries%';
+
+show global status like '%binlog%';
+
+show global status like 'select%';
+```
+

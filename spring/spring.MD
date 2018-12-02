@@ -1,3 +1,15 @@
+# 核心组件
+
+## IOC
+
+容器管理bean
+
+
+
+## AOP
+
+
+
 # 功能
 
 ## 数据库路由
@@ -648,11 +660,15 @@ java persitence API
 
 # springmvc
 
+@Controller @Service 
+
+ DispatcherServlet原理与机制
 
 
 
+1、Class<?> clazz = Class.forName(com.xx.service.impl.OrderServiceImpl);
 
-
+![1543235257802](C:\Users\boyuan\AppData\Roaming\Typora\typora-user-images\1543235257802.png)
 
 
 

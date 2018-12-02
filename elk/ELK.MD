@@ -75,6 +75,41 @@ kibana  6.5.1
 
 
 
+副本与分片
+
+
+
+新增节点
+
+
+
+数据扩容
+
+
+
+custer health 
+
+
+
+故障转移
+
+
+
+脑裂问题
+
+
+
+
+
+均匀分配到每个分片，避免数据热点问题
+
+
+
+shard分片
+
+
+
+![img](file:///C:\Users\boyuan\AppData\Roaming\Tencent\Users\478201880\QQ\WinTemp\RichOle\GYHUMFIEBY614H$SAK}{J}M.png)
 
 
 
@@ -82,8 +117,4 @@ kibana  6.5.1
 
 
 
-
-
-
-
-
+相关性计算
