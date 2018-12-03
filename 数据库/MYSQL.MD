@@ -133,24 +133,25 @@ show variables like 'innodb_page_size';
 
 
 
-### 5、查询表大小
+### 5、查询表大小等信息
 
 ```mysql
 SELECT
 	TABLE_NAME,
-	DATA_LENGTH + INDEX_LENGTH,
 	TABLE_ROWS,
 	concat(
-		round(
-			(DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024,
-			2
-		),
-		'MB'
-	) AS DATA
+		TRUNCATE (data_length / 1024 / 1024, 2),
+		' MB'
+	) AS data_size,
+	concat(
+		TRUNCATE (index_length / 1024 / 1024, 2),
+		' MB'
+	) AS index_size,
+	ENGINE
 FROM
 	information_schema.TABLES
 WHERE
-	TABLE_SCHEMA = 'snfq_pay_center';
+	TABLE_SCHEMA = '库名';
 ```
 
 
