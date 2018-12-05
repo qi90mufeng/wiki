@@ -93,3 +93,52 @@ public @interface Inherited {
 }
 ```
 
+
+
+### 四种引用类型(Reference)
+
+#### 1、强引用
+
+```java
+Object obj =new Object();  // 强引用
+obj = null;//这时候为垃圾回收器回收这个对象，至于什么时候回收，取决于垃圾回收器的算法
+```
+
+#### 2、软引用(SoftReference )
+
+> 适合需要cache场景，面向实现内存敏感的缓存
+
+```java
+String value = new String(“sy”);
+// 声明一个引用队列rq
+ReferenceQueue<String> rq = new ReferenceQueue<>();
+// 声明一个软引用,并且将sfRefer1指向value所指的对象
+SoftReference<String> sfRefer1 = new SoftReference<String>(value);
+// 声明一个软引用,并且将sfRefer2指向value所指的对象，并将他和引用队列绑定
+SoftReference<String> sfRefer2 = new WeakReference<String>(value, rq);
+sfRefer1.get();//可以获得引用对象值
+```
+
+#### 3、弱引用(WeakReference)
+
+> 适合某些场景为了无法防止被回收的规范性映射
+
+```java
+String value = new String(“sy”);
+WeakReference weakRefer = new WeakReference(value );
+System.gc();
+weakRefer.get();//null
+```
+
+#### 4、虚引用(PhantomReference)
+
+> 虚引用主要用于检测对象是否已经从内存中删除
+
+```java
+Object obj = new Object();
+PhantomReference<Object> pf = new PhantomReference<Object>(obj);
+obj=null;
+pf.get();//永远返回null
+pf.isEnQueued();//返回是否从内存中已经删除
+```
+
