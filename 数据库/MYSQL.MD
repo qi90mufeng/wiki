@@ -6,12 +6,11 @@
 
 ### 2、mysql服务器优化
 
-
+​	查询优化器
 
 ### 3、sql本身优化
 
 * 关联查询   子查询   关联子查询
-
 
 
 ### 4、反范式设计优化
@@ -39,6 +38,24 @@
 ### 6、索引优化
 
 #### 	执行计划 explain
+
+select查询的序列号，标识执行顺序
+
+1、id相同，执行顺序由上往下
+
+2、id不同，id大的先执行
+
+select_type
+
+1、simple
+
+2、primary
+
+3、subquery materialized
+
+4、union
+
+5、union result
 
 ```
 关键字段：  key  key_len
@@ -95,13 +112,21 @@ TIMESTAMP不允许为NULL = 4
 
 * ARCHIVE
 
-  可以实现高并发的插入
-
-  适合存储大量日志、历史数据
+  > arz文件
 
 * BLACKHOLE
 
 * MEMORY
+
+  > 内存数据表默认为16m   一般会去选择redis等，而不用这个
+  >
+  > 应用场景：
+  >
+  > 1、查询结果内存中的计算，大多数都是采用这种存储引擎
+  >
+  > ​	作为临时表存储需计算的数据
+  >
+  > 了解就行
 
 * MRG_MYISAM
 
@@ -112,6 +137,12 @@ TIMESTAMP不允许为NULL = 4
 * TokuDB
 
 * CSV
+
+  >csv文件     use_gp.csv
+  >
+  >select * from use_gp
+
+
 
 ### 3、页
 
@@ -153,6 +184,41 @@ FROM
 WHERE
 	TABLE_SCHEMA = '库名';
 ```
+
+### 6、通信
+
+mysql客户端与服务端的通信方式是  半双工
+
+mysql通讯特点和限制
+
+1、客户端一旦开始发送消息，另一端要接整个消息才能响应
+
+2、客户端一旦开始接收数据没法停下来发送指令
+
+### 7、连接状态
+
+```mysql
+show full processlist;
+
+show processlist;
+
+sleep
+query
+locked
+
+```
+
+### 8、缓存
+
+sql_no_cache
+
+SHOW variables LIKE 'query_cache%'
+
+缓存淘汰策略    FIFO?  LRU?
+
+缓存如何失效？  表内数据有变动？
+
+缓存命中数
 
 
 
