@@ -55,7 +55,7 @@ select_type
 
 4、union
 
-5、union result
+5、union result 
 
 ```
 关键字段：  key  key_len
