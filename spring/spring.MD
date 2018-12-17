@@ -8,7 +8,16 @@
 
 ## AOP
 
-
+```java
+Joinpoint
+	Invocation
+		MethodInvocation
+		ConstructorInvocation
+Advice
+	Interceptor
+		MethodInterceptor
+		ConstructorInterceptor
+```
 
 # 功能
 
