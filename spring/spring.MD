@@ -8,15 +8,377 @@
 
 ## AOP
 
+> **连接点(Joinpoint)**
+>
+> **切点(Pointcut)**
+>
+> **增强(Advice)**
+>
+> **目标对象(Target)**
+>
+> **引介(Introduction)**
+>
+> **织入(Weaving)**
+>
+> **代理(Proxy)**
+>
+> **切面(Aspect)**
+
+
+
+### 1、切点类型   Pointcut
+
 ```java
-Joinpoint
-	Invocation
-		MethodInvocation
-		ConstructorInvocation
+public interface Pointcut {
+   ClassFilter getClassFilter();
+   MethodMatcher getMethodMatcher();
+   Pointcut TRUE = TruePointcut.INSTANCE;
+}
+
+//通过ClassFilter定位到某些特定类上，通过MethodMatcher定位到某些特定的方法上
+```
+
+```java
+ Pointcut
+ 	TruePointcut
+ 	AnnotationMatchingPointcut
+ 	StaticMethodMatcherPointcut
+ 		StaticMethodMatcherPointcutAdvisor
+ 		NameMatchMethodPointcut
+ 		AbstractRegexpMethodPointcut
+ 			JdkRegexpMethodPointcut
+ 	ExpressionPointcut
+ 		AbstractExpressionPointcut
+ 			AspectJExpressionPointcut
+ 	DynamicMethodMatcherPointcut
+ 	ControlFlowPointcut
+ 	ComposablePointcut
+```
+
+#### 1.1、静态方法切点
+
+```java
+StaticMethodMatcherPointcut
+	NameMatchMethodPointcut
+	AbstractRegexpMethodPointcut
+```
+
+#### 1.2、动态方法切点
+
+```java
+DynamicMethodMatcherPointcut
+```
+
+#### 1.3、注解切点
+
+```java
+AnnotationMatchingPointcut
+```
+
+#### 1.4、表达式切点
+
+```java
+ExpressionPointcut
+```
+
+#### 1.5、流程切点
+
+```java
+ControlFlowPointcut
+```
+
+#### 1.6、复合切点
+
+```java
+ComposablePointcut
+```
+
+
+
+### 2、切面类型   Advisor
+
+> ```java
+> public interface Advice {
+> }
+> public interface Advisor {
+> 	Advice EMPTY_ADVICE = new Advice() {};
+> 	Advice getAdvice();
+> 	boolean isPerInstance();
+> }
+> ```
+
+```java
+Advisor
+	PointcutAdvisor
+		AbstractPointcutAdvisor
+			AbstractGenericPointcutAdvisor
+				RegexpMethodPointcutAdvisor
+				NameMatchMethodPointcutAdvisor
+				DefaultPointcutAdvisor
+				AspectJExpressionPointcutAdvisor
+			AbstractBeanFactoryPointcutAdvisor
+				DefaultBeanFactoryPointcutAdvisor
+		InstantiationModelAwarePointcutAdvisor
+		AspectJPointcutAdvisor
+	IntroductionAdvisor
+		DefaultIntroductionAdvisor
+		DeclareParentsAdvisor
+```
+
+#### 2.1、PointcutAdvisor
+
+```java
+public interface PointcutAdvisor extends Advisor {
+   Pointcut getPointcut();
+}
+```
+
+##### 2.1.1、DefaultPointcutAdvisor
+
+##### 2.1.2、NameMatchMethodPointcutAdvisor
+
+##### 2.1.3、RegexpMethodPointcutAdvisor
+
+##### 2.1.4、StaticMethodMatcherPointcutAdvisor
+
+##### 2.1.5、AspectJExpressionPointcutAdvisor
+
+##### 2.1.6、AspectJPointcutAdvisor
+
+#### 2.2、IntroductionAdvisor
+
+```java
+public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
+   ClassFilter getClassFilter();
+   void validateInterfaces() throws IllegalArgumentException;
+}
+```
+
+2.2.1、DefaultIntroductionAdvisor
+
+2.2.2、DeclareParentsAdvisor
+
+### 3、**创建代理 ** BeanPostProcessor
+
+3.1、BeanNameAutoProxyCreator
+
+3.2、DefaultAdvisorAutoProxyCreator
+
+### 4、增强 Advice
+
+```
 Advice
+	BeforeAdvice
+		MethodBeforeAdvice
+			AspectJMethodBeforeAdvice
+	AfterAdvice
+		AfterReturningAdvice
+			AspectJAfterReturningAdvice
+		AfterReturningAdviceInterceptor
+		AspectJAfterThrowingAdvice
+		AspectJAfterReturningAdvice
+	DynamicIntroductionAdvice
+		IntroductionInterceptor
+	ThrowsAdvice
 	Interceptor
 		MethodInterceptor
 		ConstructorInterceptor
+	AbstractAspectJAdvice
+		AspectJMethodBeforeAdvice
+		AspectJAroundAdvice
+		AspectJAfterAdvice
+		AspectJAfterReturningAdvice
+		AspectJAfterThrowingAdvice
+```
+
+#### 4.1、前置增强
+
+```
+Advice
+	AfterAdvice
+		ThrowsAdvice
+```
+
+org.springframework.aop.MethodBeforeAdvice，表示在目标方法执行前实施增强。
+
+#### 4.2、 后置增强
+
+org.springframework.aop.AfterReturningAdvice，表示在目标方法执行后实施增强。
+
+#### 4.3、 环绕增强
+
+org.aopalliance.intercept.MethodInterceptor，表示在目标方法执行前后实施增强。
+
+#### 4.4、异常增强
+
+org.springframework.aop.ThrowsAdvice，表示在目标方法抛出异常后后实施增强。
+
+#### 4.5、引介增强
+
+org.springframework.aop.IntroductionInterceptor，表示在目标类中添加一些新的方法和属性。
+
+### 5、Interceptor
+
+```
+Interceptor
+	MethodInterceptor
+		IntroductionInterceptor
+			DelegatingIntroductionInterceptor
+			DelegatePerTargetObjectIntroductionInterceptor
+		AbstractTraceInterceptor
+			SimpleTraceInterceptor
+				DebugInterceptor
+			AbstractMonitoringInterceptor
+				PerformanceMonitorInterceptor
+				JamonPerformanceMonitorInterceptor
+			CustomizableTraceInterceptor
+		ExposeInvocationInterceptor
+		ConcurrencyThrottleInterceptor
+		AsyncExecutionInterceptor
+		ThrowsAdviceInterceptor
+		MethodBeforeAdviceInterceptor
+		AfterReturningAdviceInterceptor
+		AspectJAroundAdvice
+		AspectJAfterThrowingAdvice
+		AspectJAfterAdvice
+	ConstructorInterceptor
+```
+
+### 6、Joinpoint
+
+```
+Joinpoint
+	Invocation
+		ConstructorInvocation
+		MethodInvocation
+			ProxyMethodInvocation
+				ReflectiveMethodInvocation
+	
+		
+```
+
+### 7、代理类型 AopProxy
+
+```
+AopProxy
+	JdkDynamicAopProxy
+	CglibAopProxy
+		ObjenesisCglibAopProxy
+SpringProxy
+	TransactionalProxy
+```
+
+7.1、JdkDynamicAopProxy
+
+7.2、CglibAopProxy
+
+
+
+### 8、MethodMatcher
+
+```
+MethodMatcher
+	TrueMethodMatcher
+	StaticMethodMatcher
+		AnnotationMethodMatcher
+		StaticMethodMatcherPointcut
+	IntroductionAwareMethodMatcher
+	DynamicMethodMatcher
+		DynamicMethodMatcherPointcut
+```
+
+### 9、ClassFilter
+
+```
+ClassFilter
+	TrueClassFilter
+	AnnotationClassFilter
+	RootClassFilter
+	TypePatternClassFilter
+```
+
+### 10、TargetClassAware
+
+```
+TargetClassAware
+	TargetSource
+		JndiObjectTargetSource
+	Advised
+		AdvisedSupport
+			ProxyCreatorSupport
+				ProxyFactory
+```
+
+### 11、RawTargetAccess
+
+```
+RawTargetAccess
+```
+
+### 12、IntroductionInfo
+
+```
+IntroductionInfo
+	IntroductionInfoSupport
+		DelegatingIntroductionInterceptor
+		DelegatePerTargetObjectIntroductionInterceptor
+```
+
+### 13、AopProxyFactory
+
+```
+AopProxyFactory
+	DefaultAopProxyFactory
+```
+
+### 14、AdvisorChainFactory
+
+```
+AdvisorChainFactory
+	DefaultAdvisorChainFactory
+```
+
+### 15、AdvisedSupportListener
+
+```
+AdvisedSupportListener
+```
+
+### 16、AdvisorAdapter
+
+```
+AdvisorAdapter
+	ThrowsAdviceAdapter
+	MethodBeforeAdviceAdapter
+    AfterReturningAdviceAdapter
+    
+```
+
+### 17、AspectJAdvisorFactory
+
+```
+AspectJAdvisorFactory
+	AbstractAspectJAdvisorFactory
+```
+
+
+
+## 类解读
+
+```java
+public class ContextNamespaceHandler extends NamespaceHandlerSupport {
+	@Override
+	public void init() {
+		registerBeanDefinitionParser("property-placeholder", new PropertyPlaceholderBeanDefinitionParser());
+		registerBeanDefinitionParser("property-override", new PropertyOverrideBeanDefinitionParser());
+		registerBeanDefinitionParser("annotation-config", new AnnotationConfigBeanDefinitionParser());
+		registerBeanDefinitionParser("component-scan", new ComponentScanBeanDefinitionParser());
+		registerBeanDefinitionParser("load-time-weaver", new LoadTimeWeaverBeanDefinitionParser());
+		registerBeanDefinitionParser("spring-configured", new SpringConfiguredBeanDefinitionParser());
+		registerBeanDefinitionParser("mbean-export", new MBeanExportBeanDefinitionParser());
+		registerBeanDefinitionParser("mbean-server", new MBeanServerBeanDefinitionParser());
+	}
+}
 ```
 
 # 功能
