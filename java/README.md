@@ -115,7 +115,7 @@ ReferenceQueue<String> rq = new ReferenceQueue<>();
 // 声明一个软引用,并且将sfRefer1指向value所指的对象
 SoftReference<String> sfRefer1 = new SoftReference<String>(value);
 // 声明一个软引用,并且将sfRefer2指向value所指的对象，并将他和引用队列绑定
-SoftReference<String> sfRefer2 = new WeakReference<String>(value, rq);
+SoftReference<String> sfRefer2 = new SoftReference<String>(value, rq);
 sfRefer1.get();//可以获得引用对象值
 ```
 
@@ -143,3 +143,19 @@ pf.isEnQueued();//返回是否从内存中已经删除
 ```
 
 ### 关键字
+
+
+
+
+
+### 多线程
+
+#### Future体系
+
+ForkJoinTask
+
+CompletableFuture
+
+RunnableFuture
+
+ScheduledFuture

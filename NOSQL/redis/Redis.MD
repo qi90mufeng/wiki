@@ -37,6 +37,60 @@ ANSI C语言编写
 
 ## 分布式锁
 
+```java
+@Slf4j
+@Component
+public class RedisService<E> implements IRedisService {
+
+    @Autowired
+    protected JedisCluster jedis;
+    
+       /**
+     * Only set the key if it does not already exist.
+     */
+    private static final String SET_IF_NOT_EXIST = "NX";
+    /**
+     * Set the specified expire time, in milliseconds.
+     */
+    private static final String SET_WITH_EXPIRE_MILL_TIME = "PX";
+    
+      /**
+     * 设置分布式锁.(过期时间毫秒)
+     *
+     * @param lockKey    锁的名称.
+     * @param requestId  持锁人ID.
+     * @param expireTime 锁的超时时间.
+     * @return 是否获取锁.
+     */
+    public synchronized boolean tryGetDistributeLock(String lockKey, String requestId, int expireTime) {
+        log.debug("lock key: {}, ownerId: {}, expire time: {}", lockKey, requestId, expireTime);
+        String result = jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_MILL_TIME, expireTime);
+        if (LOCK_SUCCESS.equals(result)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 释放分布式锁.
+     *
+     * @param lockKey   锁
+     * @param requestId 请求标识
+     * @return 是否释放成功.
+     */
+    public synchronized boolean releaseDistributedLock(String lockKey, String requestId) {
+        log.debug("release lock key: {}, ownerId: {}, expire time: {}", lockKey, requestId);
+        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+        Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
+        if (RELEASE_SUCCESS.equals(result)) {
+            return true;
+        }
+        return false;
+    }
+    
+}
+```
+
 
 
 
